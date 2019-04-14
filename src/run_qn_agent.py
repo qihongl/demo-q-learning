@@ -20,9 +20,9 @@ agent = Agent(state_dim, n_actions)
 # training params
 n_trials = 300
 max_steps = 100
-epsilon = 0.2
+epsilon = 0.3
 epsilon_decay = .95
-alpha = 0.1
+alpha = 0.2
 gamma = .9
 optimizer = optim.SGD(agent.parameters(), lr=alpha)
 
@@ -49,29 +49,26 @@ for i in range(n_trials):
             a_t = np.random.randint(n_actions)
         # transition and get reward
         r_t = env.step(a_t)
-
         # get next states info
         s_next = to_torch(env.get_agent_loc().reshape(1, -1))
         max_q_next = torch.max(agent.forward(s_next))
         # compute TD target
         q_expected = r_t + gamma * max_q_next
 
-        # loss = F.smooth_l1_loss(q_t[:, a_t], q_expected)
-        # # loss = F.mse_loss(q_t, q_next)
-        # optimizer.zero_grad()
-        # loss.backward()
-        # for param in agent.parameters():
-        #     param.grad.data.clamp_(-1, 1)
-        # optimizer.step()
-
-        w_delta = alpha * (q_expected) * s_t
-        agent.linear.weight[a_t, :] += torch.squeeze(w_delta)
+        # update weights
+        loss = F.smooth_l1_loss(q_t[:, a_t], q_expected)
+        optimizer.zero_grad()
+        loss.backward()
+        for param in agent.parameters():
+            param.grad.data.clamp_(-1, 1)
+        optimizer.step()
 
         # update R and n steps
         step += 1
         cumulative_reward += r_t
         epsilon *= epsilon_decay
 
+        # termination condition
         if env.is_terminal():
             env.reset()
             game_over = True
@@ -120,27 +117,26 @@ env.reset()
 cumulative_reward = 0
 step = 0
 locs = []
+locs.append(env.get_agent_loc())
+
 while step < max_steps:
     # get an input
-    locs.append(env.get_agent_loc())
     s_t = to_torch(locs[step].reshape(1, -1))
     q_t = agent.forward(s_t)
-    r_t = env.step(ACTIONS[torch.argmax(q_t)])
+    r_t = env.step(torch.argmax(q_t))
     step += 1
     cumulative_reward += r_t
+    locs.append(env.get_agent_loc())
     if env.is_terminal():
         break
-locs.append(env.get_agent_loc())
 step += 1
 
-ws = np.linspace(.1, 1, step)
+color_intensity = np.linspace(.1, 1, step)
+path = np.sum([color_intensity[t]*locs[t] for t in range(step)], axis=0)
 
 f, ax = plt.subplots(1, 1, figsize=(5, 5))
 ax.set_title(f'Steps took = {step}; Return = {cumulative_reward}')
-ax.imshow(
-    np.sum([ws[t]*locs[t] for t in range(step)], axis=0),
-    cmap='Blues', aspect='auto'
-)
+ax.imshow(path, cmap='Blues', aspect='auto')
 goal = Circle(env.gold_loc[::-1], radius=.1, color='red')
 bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
 ax.add_patch(goal)
