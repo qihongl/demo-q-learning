@@ -1,4 +1,5 @@
 '''a grid world
+adpated from: https://github.com/michaeltinsley/Gridworld-with-Q-Learning-Reinforcement-Learning-
 '''
 import numpy as np
 
@@ -25,14 +26,19 @@ class GridWorld:
         self.cur_loc = np.array(
             [self.height-1, np.random.randint(0, self.width)])
 
+    def is_terminal(self):
+        return np.any([
+            np.all(self.cur_loc == ts) for ts in self.terminal_states
+        ])
+
     def get_agent_loc(self):
-        """Prints out current location of the agent on the grid"""
+        '''get the current location / state of the agent'''
         grid = np.zeros((self.height, self.width))
         grid[tuple(self.cur_loc)] = 1
         return grid
 
     def get_reward(self, input_loc):
-        """Returns the reward for an input position"""
+        '''compute the reward given the current state'''
         return self.SR_func[tuple(input_loc)]
 
     def step(self, action_):
@@ -42,12 +48,12 @@ class GridWorld:
         Parameters
         ----------
         action : int
-            Description of parameter `action`.
+            [0,1,2,3] -> ['UP', 'DOWN', 'LEFT', 'RIGHT']
 
         Returns
         -------
-        type
-            Description of returned object.
+        a number
+            the reward at time t
 
         """
         action = ACTIONS[action_]
@@ -68,8 +74,3 @@ class GridWorld:
         # compute return info
         r_t = self.get_reward(self.cur_loc)
         return r_t
-
-    def is_terminal(self):
-        return np.any([
-            np.all(self.cur_loc == ts) for ts in self.terminal_states
-        ])
