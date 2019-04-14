@@ -14,12 +14,16 @@ src/
 
 ### results: 
 
-learning curve: 
+here's the q learning update rule, the agent is also epsilon greedy 
+
+<img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/47fa1e5cf8cf75996a777c11c7b9445dc96d4637" alt="lc" height=100px> 
+
+here's the learning curve from one agent: 
 
 <img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/lc.png" alt="lc" height=400px>
 
 <br>
 
-a sample path (red dot = reward, black dot = bomb): 
+here's a sample path from a trained agent; red dot = reward, black dot = bomb: 
 
 <img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/path.png" alt="path" height=400px>
