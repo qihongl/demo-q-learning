@@ -84,7 +84,7 @@ axes[0].set_ylabel('Return')
 
 axes[1].plot(log_steps)
 axes[1].set_title(' ')
-axes[1].set_ylabel('n steps took')
+axes[1].set_ylabel('n steps taken')
 axes[1].set_xlabel('Epoch')
 axes[1].set_ylim([0, None])
 
@@ -129,7 +129,7 @@ color_intensity = np.linspace(.1, 1, step)
 path = np.sum([color_intensity[t]*locs[t] for t in range(step)], axis=0)
 
 f, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.set_title(f'Steps took = {step}; Return = {cumulative_reward}')
+ax.set_title(f'Steps taken = {step}; Return = {cumulative_reward}')
 ax.imshow(path, cmap='Blues', aspect='auto')
 goal = Circle(env.gold_loc[::-1], radius=.1, color='red')
 bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')

@@ -91,56 +91,56 @@ axes[0].set_ylabel('Return')
 
 axes[1].plot(log_steps)
 axes[1].set_title(' ')
-axes[1].set_ylabel('n steps took')
+axes[1].set_ylabel('n steps taken')
 axes[1].set_xlabel('Epoch')
 axes[1].set_ylim([0, None])
 
 sns.despine()
 f.tight_layout()
 
-'''weights'''
-
-W = agent.linear.weight.data.numpy()
-# vmin =
-f, axes = plt.subplots(4, 1, figsize=(5, 11))
-for i, ax in enumerate(axes):
-    sns.heatmap(
-        W[i, :].reshape(5, 5),
-        cmap='viridis', square=True,
-        vmin=np.min(W), vmax=np.max(W),
-        ax=ax
-    )
-    ax.set_title(ACTIONS[i])
-f.tight_layout()
-
-'''show a sample trajectory'''
-
-env.reset()
-cumulative_reward = 0
-step = 0
-locs = []
-locs.append(env.get_agent_loc())
-
-while step < max_steps:
-    # get an input
-    s_t = to_torch(locs[step].reshape(1, -1))
-    q_t = agent.forward(s_t)
-    r_t = env.step(torch.argmax(q_t))
-    step += 1
-    cumulative_reward += r_t
-    locs.append(env.get_agent_loc())
-    if env.is_terminal():
-        break
-step += 1
-
-color_intensity = np.linspace(.1, 1, step)
-path = np.sum([color_intensity[t]*locs[t] for t in range(step)], axis=0)
-
-f, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.set_title(f'Steps took = {step}; Return = {cumulative_reward}')
-ax.imshow(path, cmap='Blues', aspect='auto')
-goal = Circle(env.gold_loc[::-1], radius=.1, color='red')
-bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
-ax.add_patch(goal)
-ax.add_patch(bomb)
-f.tight_layout()
+# '''weights'''
+#
+# W = agent.linear.weight.data.numpy()
+# # vmin =
+# f, axes = plt.subplots(4, 1, figsize=(5, 11))
+# for i, ax in enumerate(axes):
+#     sns.heatmap(
+#         W[i, :].reshape(5, 5),
+#         cmap='viridis', square=True,
+#         vmin=np.min(W), vmax=np.max(W),
+#         ax=ax
+#     )
+#     ax.set_title(ACTIONS[i])
+# f.tight_layout()
+#
+# '''show a sample trajectory'''
+#
+# env.reset()
+# cumulative_reward = 0
+# step = 0
+# locs = []
+# locs.append(env.get_agent_loc())
+#
+# while step < max_steps:
+#     # get an input
+#     s_t = to_torch(locs[step].reshape(1, -1))
+#     q_t = agent.forward(s_t)
+#     r_t = env.step(torch.argmax(q_t))
+#     step += 1
+#     cumulative_reward += r_t
+#     locs.append(env.get_agent_loc())
+#     if env.is_terminal():
+#         break
+# step += 1
+#
+# color_intensity = np.linspace(.1, 1, step)
+# path = np.sum([color_intensity[t]*locs[t] for t in range(step)], axis=0)
+#
+# f, ax = plt.subplots(1, 1, figsize=(5, 5))
+# ax.set_title(f'Steps taken = {step}; Return = {cumulative_reward}')
+# ax.imshow(path, cmap='Blues', aspect='auto')
+# goal = Circle(env.gold_loc[::-1], radius=.1, color='red')
+# bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
+# ax.add_patch(goal)
+# ax.add_patch(bomb)
+# f.tight_layout()
