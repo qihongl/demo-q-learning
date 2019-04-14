@@ -1,13 +1,13 @@
 # demo-q-learning
 
-a simple demo of q learning
+a implementation of q learning from scratch
 
 ### files: 
 ```
 ├── GridWorld.py                    # the env
 ├── LinearAgent.py                  # a linear agent in pytorch 
 ├── run_lqn_agent.py                # run the pytorch linear agent 
-├── run_lqn_agent_minimal.py        # run a linear agent, update weights by hand
+├── run_lqn_agent_minimal.py        # run a linear agent, update weights by hand (no autodiff)
 └── utils.py
 ```
 
