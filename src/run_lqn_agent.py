@@ -113,6 +113,7 @@ for i, ax in enumerate(axes):
     ax.set_title(ACTIONS[i])
 f.tight_layout()
 
+
 '''show a sample trajectory'''
 
 env.reset()

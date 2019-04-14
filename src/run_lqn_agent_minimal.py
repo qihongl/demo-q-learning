@@ -93,7 +93,6 @@ f.tight_layout()
 
 '''weights'''
 
-
 f, axes = plt.subplots(4, 1, figsize=(5, 11))
 for i, ax in enumerate(axes):
     sns.heatmap(
@@ -104,6 +103,7 @@ for i, ax in enumerate(axes):
     )
     ax.set_title(ACTIONS[i])
 f.tight_layout()
+
 
 '''show a sample trajectory'''
 

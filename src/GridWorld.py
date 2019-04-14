@@ -4,13 +4,15 @@ adpated from: https://github.com/michaeltinsley/Gridworld-with-Q-Learning-Reinfo
 import numpy as np
 
 ACTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT']
+SIDE_LEN = 5
 
 
 class GridWorld:
     # Initialise starting data
     def __init__(self):
         # Set information about the gridworld
-        self.height = self.width = 5
+        self.height = self.width = SIDE_LEN
+        self.n_locs = self.height*self.width
         # Set locations for the bomb and the gold
         self.gold_loc = np.array([0, 3])
         self.bomb_loc = np.array([1, 3])
@@ -74,3 +76,9 @@ class GridWorld:
         # compute return info
         r_t = self.get_reward(self.cur_loc)
         return r_t
+
+
+def construct_loc(loc_h, loc_w, height=SIDE_LEN, width=SIDE_LEN):
+    grid = np.zeros((height, width))
+    grid[tuple([loc_h, loc_w])] = 1
+    return grid
