@@ -4,6 +4,7 @@ from LinearAgent import LinearAgent as Agent
 from GridWorld import GridWorld, ACTIONS
 from utils import to_torch
 import numpy as np
+import os
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
@@ -11,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import seaborn as sns
 sns.set(style='white', context='talk', palette='colorblind')
-
+img_dir = '../imgs'
 
 # define env and agent
 env = GridWorld()
@@ -97,6 +98,7 @@ axes[1].set_ylim([0, None])
 
 sns.despine()
 f.tight_layout()
+f.savefig(os.path.join(img_dir, 'lc.png'), dpi=120)
 
 '''weights'''
 
@@ -112,7 +114,7 @@ for i, ax in enumerate(axes):
     )
     ax.set_title(ACTIONS[i])
 f.tight_layout()
-
+f.savefig(os.path.join(img_dir, 'wts.png'), dpi=120)
 
 '''show a sample trajectory'''
 
@@ -145,3 +147,4 @@ bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
 ax.add_patch(goal)
 ax.add_patch(bomb)
 f.tight_layout()
+f.savefig(os.path.join(img_dir, 'path.png'), dpi=120)
