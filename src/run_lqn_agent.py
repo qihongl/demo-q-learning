@@ -1,3 +1,5 @@
+'''run a linear q learning network on a grid world'''
+
 from LinearAgent import LinearAgent as Agent
 from GridWorld import GridWorld, ACTIONS
 from utils import to_torch
