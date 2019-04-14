@@ -26,4 +26,4 @@ here's the learning curve from one agent:
 
 here's a sample path from a trained agent; red dot = reward, black dot = bomb: 
 
-<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/path.png" alt="path" height=400px>
+<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/path.png" alt="path" height=350px>
