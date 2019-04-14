@@ -4,6 +4,7 @@ a implementation of q learning from scratch
 
 ### files: 
 ```
+src/
 ├── GridWorld.py                    # the env
 ├── LinearAgent.py                  # a linear agent in pytorch 
 ├── run_lqn_agent.py                # run the pytorch linear agent 
