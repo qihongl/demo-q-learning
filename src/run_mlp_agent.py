@@ -1,6 +1,6 @@
-'''run a linear q learning network on a grid world'''
+'''run a q learning mlp agent (with a hidden layer) on a grid world'''
 
-from agent.Linear import Linear as Agent
+from agent.MLP import MLP as Agent
 from GridWorld import GridWorld, ACTIONS
 from utils import to_torch
 import numpy as np
@@ -11,20 +11,26 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import seaborn as sns
+
 sns.set(style='white', context='talk', palette='colorblind')
+np.random.seed(0)
+torch.manual_seed(0)
+
 img_dir = '../imgs'
 
 # define env and agent
 env = GridWorld(True)
 state_dim = env.height * env.width
+# define the agent
+n_hidden = 4
 n_actions = len(ACTIONS)
-agent = Agent(state_dim, n_actions)
+agent = Agent(state_dim, n_hidden, n_actions)
 
 # training params
-n_trials = 300
+n_trials = 1500
 max_steps = 50
 epsilon = .3
-alpha = 0.3
+alpha = 0.1
 gamma = .8
 optimizer = optim.SGD(agent.parameters(), lr=alpha)
 
@@ -60,8 +66,6 @@ for i in range(n_trials):
         loss = F.smooth_l1_loss(q_t[:, a_t], q_expected)
         optimizer.zero_grad()
         loss.backward()
-        # for param in agent.parameters():
-        #     param.grad.data.clamp_(-1, 1)
         optimizer.step()
 
         # update R and n steps
@@ -79,15 +83,25 @@ for i in range(n_trials):
 '''
 learning curve
 '''
+current_palette = sns.color_palette()
+ws = 10
+log_steps_smoothed = [
+    np.mean(log_steps[k:k+ws]) for k in range(n_trials-ws+1)
+]
+log_return_smoothed = [
+    np.mean(log_return[k:k+ws]) for k in range(n_trials-ws+1)
+]
 
 f, axes = plt.subplots(2, 1, figsize=(6, 6), sharex=True)
 
-axes[0].plot(log_return)
+axes[0].plot(log_return, color=current_palette[0], alpha=.3)
+axes[0].plot(log_return_smoothed)
 axes[0].axhline(0, color='grey', linestyle='--')
 axes[0].set_title('Learning curve')
 axes[0].set_ylabel('Return')
 
-axes[1].plot(log_steps)
+axes[1].plot(log_steps, color=current_palette[0], alpha=.3)
+axes[1].plot(log_steps_smoothed)
 axes[1].set_title(' ')
 axes[1].set_ylabel('n steps taken')
 axes[1].set_xlabel('Epoch')
@@ -96,22 +110,6 @@ axes[1].set_ylim([0, None])
 sns.despine()
 f.tight_layout()
 f.savefig(os.path.join(img_dir, 'lc.png'), dpi=120)
-
-'''weights'''
-
-W = agent.linear.weight.data.numpy()
-# vmin =
-f, axes = plt.subplots(4, 1, figsize=(5, 11))
-for i, ax in enumerate(axes):
-    sns.heatmap(
-        W[i, :].reshape(5, 5),
-        cmap='viridis', square=True,
-        vmin=np.min(W), vmax=np.max(W),
-        ax=ax
-    )
-    ax.set_title(ACTIONS[i])
-f.tight_layout()
-f.savefig(os.path.join(img_dir, 'wts.png'), dpi=120)
 
 '''show a sample trajectory'''
 env.reset()
