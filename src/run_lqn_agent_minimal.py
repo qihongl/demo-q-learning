@@ -18,11 +18,10 @@ n_actions = len(ACTIONS)
 W = np.zeros((state_dim, n_actions))
 
 # training params
-n_trials = 300
-max_steps = 100
-epsilon = 0.3
-epsilon_decay = .95
-alpha = 0.2
+n_trials = 100
+max_steps = 50
+epsilon = 0.2
+alpha = 0.1
 gamma = .9
 
 
@@ -60,8 +59,7 @@ for i in range(n_trials):
 
         # update R and n steps
         step += 1
-        cumulative_reward += r_t
-        epsilon *= epsilon_decay
+        cumulative_reward += r_t * gamma**step
 
         # termination condition
         if env.is_terminal():
@@ -119,7 +117,7 @@ while step < max_steps:
     q_t = np.dot(s_t, W)
     r_t = env.step(np.argmax(q_t))
     step += 1
-    cumulative_reward += r_t
+    cumulative_reward += r_t * gamma**step
     locs.append(env.get_agent_loc())
     if env.is_terminal():
         break
@@ -129,10 +127,11 @@ color_intensity = np.linspace(.1, 1, step)
 path = np.sum([color_intensity[t]*locs[t] for t in range(step)], axis=0)
 
 f, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.set_title(f'Steps taken = {step}; Return = {cumulative_reward}')
+ax.set_title(f'Steps taken = {step}; Return = %.2f' % cumulative_reward)
 ax.imshow(path, cmap='Blues', aspect='auto')
 goal = Circle(env.gold_loc[::-1], radius=.1, color='red')
-bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
 ax.add_patch(goal)
-ax.add_patch(bomb)
+if env.has_bomb:
+    bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
+    ax.add_patch(bomb)
 f.tight_layout()

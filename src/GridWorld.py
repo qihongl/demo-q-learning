@@ -9,18 +9,21 @@ SIDE_LEN = 5
 
 class GridWorld:
     # Initialise starting data
-    def __init__(self):
+    def __init__(self, has_bomb=False):
         # Set information about the gridworld
         self.height = self.width = SIDE_LEN
         self.n_locs = self.height*self.width
+        # define the state->reward function
+        self.SR_func = np.zeros((self.height, self.width))
         # Set locations for the bomb and the gold
         self.gold_loc = np.array([0, 3])
-        self.bomb_loc = np.array([1, 3])
-        self.terminal_states = [self.bomb_loc, self.gold_loc]
-        # define the state->reward function
-        self.SR_func = np.zeros((self.height, self.width)) - 1
-        self.SR_func[tuple(self.bomb_loc)] = -10
         self.SR_func[tuple(self.gold_loc)] = 10
+        self.terminal_states = [self.gold_loc]
+        self.has_bomb = has_bomb
+        if has_bomb:
+            self.bomb_loc = np.array([1, 3])
+            self.SR_func[tuple(self.bomb_loc)] = -10
+            self.terminal_states.append(self.bomb_loc)
         # init agent location
         self.reset()
 
