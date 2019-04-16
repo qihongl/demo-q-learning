@@ -1,15 +1,18 @@
 # demo-q-learning
 
-a implementation of q learning from scratch
+some toy demos, q learning with neural network function approximator
 
 ### files: 
 ```
-src/
-├── GridWorld.py                    # the env
-├── LinearAgent.py                  # a linear agent in pytorch 
-├── run_lqn_agent.py                # run the pytorch linear agent 
-├── run_lqn_agent_minimal.py        # run a linear agent, update weights by hand (no autodiff)
-└── utils.py
+└── src
+    ├── GridWorld.py              # the env
+    ├── agent
+    │   ├── Linear.py             # a linear agent in pytorch 
+    │   └── MLP.py
+    ├── run_lqn_agent.py          # run a pytorch linear agent 
+    ├── run_lqn_agent_minimal.py  # run a linear agent, update weights by hand (no autodiff)
+    ├── run_mlp_agent.py          # run a pytorch feed=forward network agent 
+    └── utils.py
 ```
 
 ### results: 
