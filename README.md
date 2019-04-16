@@ -7,11 +7,12 @@ some toy demos, q learning with neural network function approximator
 └── src
     ├── GridWorld.py              # the env
     ├── agent
-    │   ├── Linear.py             # a linear agent in pytorch 
-    │   └── MLP.py
-    ├── run_lqn_agent.py          # run a pytorch linear agent 
-    ├── run_lqn_agent_minimal.py  # run a linear agent, update weights by hand (no autodiff)
-    ├── run_mlp_agent.py          # run a pytorch feed=forward network agent 
+    │   ├── Linear.py             # a linear network/regression 
+    │   └── MLP.py                # a feed-forward network 
+    ├── run_lqn_agent_minimal.py  # run a linear q network, update weights by hand (no autodiff)
+    ├── run_lqn_agent.py          # run a linear q network     
+    ├── run_mlp_agent.py          # run a feed-forward q network 
+    ├── run_rnn_agent.py          # run a lstm q network 
     └── utils.py
 ```
 
@@ -23,10 +24,10 @@ here's the q learning update rule, the agent is also epsilon greedy
 
 here's the learning curve from one agent: 
 
-<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/lc.png" alt="lc" height=400px>
+<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/rqn-lc.png" alt="lc" height=400px>
 
 <br>
 
 here's a sample path from a trained agent; red dot = reward, black dot = bomb: 
 
-<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/path.png" alt="path" height=350px>
+<img src="https://github.com/qihongl/demo-q-learning/blob/master/imgs/rqn-path.png" alt="path" height=350px>
