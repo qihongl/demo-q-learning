@@ -5,7 +5,8 @@ some toy demos, q learning with neural network function approximator
 ### files: 
 ```
 └── src
-    ├── GridWorld.py              # the env
+    └──envs 
+    │   └── GridWorld.py          # a grid world
     ├── agent
     │   ├── Linear.py             # a linear network/regression 
     │   └── MLP.py                # a feed-forward network 
