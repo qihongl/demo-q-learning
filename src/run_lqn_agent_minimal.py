@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import seaborn as sns
 sns.set(style='white', context='talk', palette='colorblind')
-
+np.random.seed(0)
 
 # define env and agent
 env = GridWorld()
@@ -18,7 +18,7 @@ n_actions = len(ACTIONS)
 W = np.zeros((state_dim, n_actions))
 
 # training params
-n_trials = 100
+n_trials = 150
 max_steps = 50
 epsilon = 0.2
 alpha = 0.1
@@ -29,15 +29,21 @@ gamma = .9
 '''
 log_return = []
 log_steps = []
+log_actions = []
+log_states = []
+
 for i in range(n_trials):
 
+    env.reset()
     cumulative_reward = 0
     step = 0
-    game_over = False
+    log_actions_i = []
+    log_states_i = []
 
-    while step < max_steps and not game_over:
+    while step < max_steps:
         # get current state
         s_t = env.get_agent_loc().reshape(1, -1)
+        log_states_i.append(s_t)
         # compute q val
         q_t = np.dot(s_t, W)
         # epsilon greedy action selection
@@ -60,14 +66,19 @@ for i in range(n_trials):
         # update R and n steps
         step += 1
         cumulative_reward += r_t * gamma**step
+        log_actions_i.append(a_t)
 
         # termination condition
         if env.is_terminal():
-            env.reset()
-            game_over = True
+            break
 
+    log_states_i.append(s_t)
+
+    log_states.append(log_states_i)
+    log_actions.append(log_actions_i)
     log_return.append(cumulative_reward)
     log_steps.append(step)
+
 
 '''
 learning curve
@@ -82,6 +93,7 @@ axes[0].set_ylabel('Return')
 
 axes[1].plot(log_steps)
 axes[1].set_title(' ')
+axes[1].axhline(0, color='grey', linestyle='--')
 axes[1].set_ylabel('n steps taken')
 axes[1].set_xlabel('Epoch')
 axes[1].set_ylim([0, None])

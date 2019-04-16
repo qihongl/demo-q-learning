@@ -9,9 +9,9 @@ SIDE_LEN = 5
 
 class GridWorld:
     # Initialise starting data
-    def __init__(self, has_bomb=False):
+    def __init__(self, side_len=5, has_bomb=False):
         # Set information about the gridworld
-        self.height = self.width = SIDE_LEN
+        self.height = self.width = side_len
         self.n_locs = self.height*self.width
         # define the state->reward function
         self.SR_func = np.zeros((self.height, self.width))
@@ -81,7 +81,7 @@ class GridWorld:
         return r_t
 
 
-def construct_loc(loc_h, loc_w, height=SIDE_LEN, width=SIDE_LEN):
-    grid = np.zeros((height, width))
-    grid[tuple([loc_h, loc_w])] = 1
-    return grid
+# def construct_loc(loc_h, loc_w, height, width):
+#     grid = np.zeros((height, width))
+#     grid[tuple([loc_h, loc_w])] = 1
+#     return grid

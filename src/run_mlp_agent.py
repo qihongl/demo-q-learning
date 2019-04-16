@@ -19,7 +19,7 @@ torch.manual_seed(0)
 img_dir = '../imgs'
 
 # define env and agent
-env = GridWorld(True)
+env = GridWorld(has_bomb=True)
 state_dim = env.height * env.width
 # define the agent
 n_hidden = 4
@@ -27,7 +27,7 @@ n_actions = len(ACTIONS)
 agent = Agent(state_dim, n_hidden, n_actions)
 
 # training params
-n_trials = 1500
+n_trials = 4000
 max_steps = 50
 epsilon = .3
 alpha = 0.1
@@ -40,11 +40,11 @@ log_return = []
 log_steps = []
 for i in range(n_trials):
 
+    env.reset()
     cumulative_reward = 0
     step = 0
-    game_over = False
 
-    while step < max_steps and not game_over:
+    while step < max_steps:
         # get current state
         s_t = to_torch(env.get_agent_loc().reshape(1, -1))
         # compute q val
@@ -63,7 +63,7 @@ for i in range(n_trials):
         q_expected = r_t + gamma * max_q_next
 
         # update weights
-        loss = F.smooth_l1_loss(q_t[:, a_t], q_expected)
+        loss = F.smooth_l1_loss(q_t[:, a_t], q_expected.data)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -74,8 +74,7 @@ for i in range(n_trials):
 
         # termination condition
         if env.is_terminal():
-            env.reset()
-            game_over = True
+            break
 
     log_return.append(cumulative_reward)
     log_steps.append(step)
@@ -109,7 +108,7 @@ axes[1].set_ylim([0, None])
 
 sns.despine()
 f.tight_layout()
-f.savefig(os.path.join(img_dir, 'lc.png'), dpi=120)
+# f.savefig(os.path.join(img_dir, 'lc.png'), dpi=120)
 
 '''show a sample trajectory'''
 env.reset()
@@ -142,4 +141,4 @@ if env.has_bomb:
     bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
     ax.add_patch(bomb)
 f.tight_layout()
-f.savefig(os.path.join(img_dir, 'path.png'), dpi=120)
+# f.savefig(os.path.join(img_dir, 'path.png'), dpi=120)
