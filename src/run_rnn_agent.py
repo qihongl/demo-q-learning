@@ -1,7 +1,8 @@
 '''run a linear q learning network on a grid world'''
 
-from GridWorld import GridWorld, ACTIONS
+from envs.GridWorld import GridWorld, ACTIONS
 from utils import to_torch
+
 import numpy as np
 import os
 import torch
@@ -78,10 +79,10 @@ for i in range(n_trials):
         out_next, _ = rnn(s_next.view(1, 1, -1), h_t)
         q_next = readout(out_next)
         # compute TD target
-        q_expected = r_t + gamma * torch.max(q_next)
+        q_target = r_t + gamma * torch.max(q_next)
 
         # update weights
-        loss = F.smooth_l1_loss(q_t[:, :, a_t], q_expected.data)
+        loss = F.smooth_l1_loss(q_t[:, :, a_t], q_target.data)
         optimizer.zero_grad()
         loss.backward(retain_graph=True)
         optimizer.step()

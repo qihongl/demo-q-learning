@@ -8,17 +8,18 @@ SIDE_LEN = 5
 
 
 class GridWorld:
-    # Initialise starting data
+
     def __init__(self, side_len=5, has_bomb=False):
         # Set information about the gridworld
         self.height = self.width = side_len
         self.n_locs = self.height*self.width
-        # define the state->reward function
+        # init the state->reward function
         self.SR_func = np.zeros((self.height, self.width))
-        # Set locations for the bomb and the gold
+        # set location - gold
         self.gold_loc = np.array([0, 3])
         self.SR_func[tuple(self.gold_loc)] = 10
         self.terminal_states = [self.gold_loc]
+        # set location - bomb
         self.has_bomb = has_bomb
         if has_bomb:
             self.bomb_loc = np.array([1, 3])
@@ -28,10 +29,12 @@ class GridWorld:
         self.reset()
 
     def reset(self):
+        '''reinit the agent loc '''
         self.cur_loc = np.array(
             [self.height-1, np.random.randint(0, self.width)])
 
     def is_terminal(self):
+        '''decide if to terminate this trial'''
         return np.any([
             np.all(self.cur_loc == ts) for ts in self.terminal_states
         ])

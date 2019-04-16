@@ -1,8 +1,9 @@
 '''run a q learning mlp agent (with a hidden layer) on a grid world'''
 
+from envs.GridWorld import GridWorld, ACTIONS
 from agent.MLP import MLP as Agent
-from GridWorld import GridWorld, ACTIONS
 from utils import to_torch
+
 import numpy as np
 import os
 import torch
@@ -60,10 +61,10 @@ for i in range(n_trials):
         s_next = to_torch(env.get_agent_loc().reshape(1, -1))
         max_q_next = torch.max(agent.forward(s_next))
         # compute TD target
-        q_expected = r_t + gamma * max_q_next
+        q_target = r_t + gamma * max_q_next
 
         # update weights
-        loss = F.smooth_l1_loss(q_t[:, a_t], q_expected.data)
+        loss = F.smooth_l1_loss(q_t[:, a_t], q_target.data)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -108,7 +109,7 @@ axes[1].set_ylim([0, None])
 
 sns.despine()
 f.tight_layout()
-# f.savefig(os.path.join(img_dir, 'lc.png'), dpi=120)
+f.savefig(os.path.join(img_dir, 'mlp-lc.png'), dpi=120)
 
 '''show a sample trajectory'''
 env.reset()
@@ -141,4 +142,4 @@ if env.has_bomb:
     bomb = Circle(env.bomb_loc[::-1], radius=.1, color='black')
     ax.add_patch(bomb)
 f.tight_layout()
-# f.savefig(os.path.join(img_dir, 'path.png'), dpi=120)
+f.savefig(os.path.join(img_dir, 'mlp-path.png'), dpi=120)

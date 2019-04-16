@@ -2,7 +2,8 @@
 do the weight update by hand (w/o any autodiff machinery) for edu purpose
 '''
 
-from GridWorld import GridWorld, ACTIONS
+from envs.GridWorld import GridWorld, ACTIONS
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
@@ -57,10 +58,10 @@ for i in range(n_trials):
         s_next = env.get_agent_loc().reshape(1, -1)
         max_q_next = np.max(np.dot(s_next, W))
         # compute TD target
-        q_expected = r_t + gamma * max_q_next
+        q_target = r_t + gamma * max_q_next
 
         # update weights
-        w_delta = alpha * (q_expected) * s_t
+        w_delta = alpha * q_target * s_t
         W[:, a_t] += np.squeeze(w_delta)
 
         # update R and n steps
